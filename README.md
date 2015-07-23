@@ -83,7 +83,7 @@ The Code Climate CLI runs a series of Docker containers, known as Engines. The o
   As well as a docker build command (to be run within this repository):
 
   ```command
-  docker build --rm -t mcclimate .
+  docker build --rm -t codeclimate/codeclimate-mcclimate .
   ```
 
   When you're done, you should be able to run `codeclimate analyze --dev` and see the results of your new Engine.
