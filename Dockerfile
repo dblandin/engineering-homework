@@ -1,7 +1,9 @@
 FROM alpine:edge
+MAINTAINER Devon Blandin <dblandin@gmail.com>
 
-WORKDIR /usr/src/app
-COPY . /usr/src/app
+WORKDIR /code
+COPY . /code
+VOLUME /code
 
 RUN apk --update add ruby ruby-dev ruby-bundler build-base && \
     bundle install -j 4 && \

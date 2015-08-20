@@ -1,18 +1,24 @@
 require 'cc/engine/mcclimate'
-require 'tmpdir'
+require 'support/helpers/engine_helper'
 
 module CC::Engine
   describe Mcclimate do
+    include EngineHelper
+
     describe '#run' do
       it 'analyzes source ruby files for complexity' do
-        code_path = Dir.mktmpdir
-        output_io = StringIO.new
+        create_source_file('foo.rb', <<-RUBY)
+          def foo
+            x = 1 + 3
+            y = 2 * 4 + 6
+            z = x * y / 2
+          end
+        RUBY
 
         Mcclimate.new(code_path: code_path, output_io: output_io).run
 
-        results = output_io.string
-
-        expect(results.length).not_to be_zero
+        expect(output_io.string).not_to eq('')
+        expect(last_issue['description']).to eq("'#foo' has a complexity of 12")
       end
     end
   end
