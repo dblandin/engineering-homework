@@ -1,15 +1,10 @@
 require 'pathname'
 require 'parser/ruby20'
-require_relative './mcclimate/violation'
-require_relative './mcclimate/method_query'
-require_relative './mcclimate/complexity_score'
+require_relative './mcclimate/file_processor'
 
 module CC
   module Engine
     class Mcclimate
-      MATH_OPERATIONS        ||= %i[+ - / *].freeze
-      SCORE_REPORT_THRESHOLD ||= 10.freeze
-
       attr_reader :code_path, :config, :output_io
 
       def initialize(code_path:, config: {}, output_io: STDOUT)
@@ -20,20 +15,11 @@ module CC
 
       def run
         ruby_files.each do |path|
-          contents      = File.read(path)
-          parsed_tree   = Parser::Ruby20.parse(contents)
-          found_methods = MethodQuery.new(parsed_tree).all
+          tree          = Parser::Ruby20.parse_file(path)
+          relative_path = Pathname.new(path).relative_path_from(code_path)
+          processor     = FileProcessor.new(relative_path, output_io)
 
-          found_methods.each do |method_node|
-            score = ComplexityScore.new(method_node).calculate
-
-            if score > SCORE_REPORT_THRESHOLD
-              relative_path = Pathname.new(path).relative_path_from(code_path)
-              violation     = Violation.new(method_node, score, relative_path)
-
-              report_violation(violation)
-            end
-          end
+          processor.process(tree)
         end
       end
 
@@ -44,13 +30,9 @@ module CC
       end
 
       def excluded_ruby_files
-        config.fetch(:exclude_paths, []).map { |path| Pathname.glob(File.join(code_path, path)) }.flatten
-      end
-
-      def report_violation(violation)
-        json = JSON.dump(violation.details)
-
-        output_io.print("#{json}\0")
+        config.fetch(:exclude_paths, []).map do |path|
+          Pathname.glob(File.join(code_path, path))
+        end.flatten
       end
     end
   end
