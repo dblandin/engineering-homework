@@ -17,8 +17,8 @@ module CC::Engine
           'location' => {
             'path' => 'foo.rb',
             'lines' => {
-              'begin' => 1,
-              'end' => 5
+              'begin' => 2,
+              'end' => 6
             }
           }
         )
@@ -48,10 +48,12 @@ module CC::Engine
     def complex_method_body
       # complexity score of 12 (1 + 5 operands + 6 integers)
       <<-RUBY
-        def foo
-          x = 1 + 3
-          y = 2 * 4 + 6
-          z = x * y / 2
+        class Foo
+          def foo
+            x = 1 + 3
+            y = 2 * 4 + 6
+            z = x * y / 2
+          end
         end
       RUBY
     end

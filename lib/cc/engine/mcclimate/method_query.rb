@@ -8,14 +8,14 @@ module CC
           @contents = contents
         end
 
-        def all
+        def all(node = parsed)
           found = []
 
-          if parsed.is_a?(Parser::AST::Node)
-            if parsed.type == :def
-              found << parsed
+          if node.is_a?(Parser::AST::Node)
+            if node.type == :def
+              found << node
             else
-              parsed.children.each do |child|
+              node.children.each do |child|
                 found += all(child)
               end
             end
