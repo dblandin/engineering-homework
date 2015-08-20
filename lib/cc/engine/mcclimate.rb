@@ -1,6 +1,6 @@
 require 'parser/ruby20'
 require 'pathname'
-require 'json'
+require_relative './mcclimate/violation'
 
 module CC
   module Engine
@@ -76,24 +76,9 @@ module CC
       end
 
       def violation_json(method, score, path)
-        method_name   = method.children[0]
         relative_path = Pathname.new(path).relative_path_from(code_path)
-        expression    = method.location.expression
 
-        {
-          type: 'issue',
-          check_name: 'complexity',
-          description: "'##{method_name}' has a complexity of #{score}",
-          categories: ['Complexity'],
-          remediation_points: 500,
-          location: {
-            path: relative_path,
-            lines: {
-              begin: expression.first_line,
-              end: expression.last_line
-            }
-          },
-        }.to_json
+        Violation.new(method, score, relative_path).to_json
       end
     end
   end
