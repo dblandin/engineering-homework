@@ -10,7 +10,7 @@ module CC
       attr_reader :code_path, :config, :output_io
 
       def initialize(code_path:, config: {}, output_io: STDOUT)
-        @code_path = code_path
+        @code_path = Pathname.new(code_path)
         @config    = config
         @output_io = output_io
       end
@@ -18,7 +18,7 @@ module CC
       def run
         ruby_files = File.join(code_path, '**', '*.rb')
 
-        Dir.glob(ruby_files).each do |path|
+        Pathname.glob(ruby_files).each do |path|
           contents      = File.read(path)
           parsed        = Parser::Ruby20.parse(contents)
           found_methods = found_methods(parsed)
@@ -27,8 +27,7 @@ module CC
             score = calculate_score(method) + 1
 
             if score > 10
-              method_name = method.children[0]
-              json        = violation_json(method_name, score)
+              json = violation_json(method, score, path)
 
               output_io.print("#{json}\0")
             end
@@ -76,7 +75,11 @@ module CC
         score
       end
 
-      def violation_json(method_name, score)
+      def violation_json(method, score, path)
+        method_name   = method.children[0]
+        relative_path = Pathname.new(path).relative_path_from(code_path)
+        expression    = method.location.expression
+
         {
           type: 'issue',
           check_name: 'complexity',
@@ -84,10 +87,10 @@ module CC
           categories: ['Complexity'],
           remediation_points: 500,
           location: {
-            path: 'foo.rb',
+            path: relative_path,
             lines: {
-              begin: 1,
-              end: 2
+              begin: expression.first_line,
+              end: expression.last_line
             }
           },
         }.to_json
