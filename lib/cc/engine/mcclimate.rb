@@ -1,5 +1,5 @@
 require 'pathname'
-require 'parser/ruby20'
+require 'parser/current'
 require_relative './mcclimate/file_processor'
 
 module CC
@@ -15,7 +15,7 @@ module CC
 
       def run
         ruby_files.each do |path|
-          tree          = Parser::Ruby20.parse_file(path)
+          tree          = Parser::CurrentRuby.parse_file(path)
           relative_path = Pathname.new(path).relative_path_from(code_path)
           processor     = FileProcessor.new(relative_path, output_io)
 

@@ -1,11 +1,11 @@
 require 'cc/engine/mcclimate/complexity_processor'
-require 'parser/ruby20'
+require 'parser/current'
 
 module CC::Engine
   describe Mcclimate::ComplexityProcessor do
     describe '#calculate' do
       it 'calculates the complexity score for a method' do
-        tree = Parser::Ruby20.parse(complex_method_body)
+        tree = Parser::CurrentRuby.parse(complex_method_body)
 
         processor = Mcclimate::ComplexityProcessor.new
         processor.process(tree)

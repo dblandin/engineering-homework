@@ -1,11 +1,11 @@
 require 'cc/engine/mcclimate/violation'
-require 'parser/ruby20'
+require 'parser/current'
 
 module CC::Engine
   describe Mcclimate::Violation do
     describe '#details' do
       it 'returns violation json for the passed values' do
-        node = Parser::Ruby20.parse(method_body)
+        node = Parser::CurrentRuby.parse(method_body)
 
         violation = Mcclimate::Violation.new(node, 20, 'foo.rb')
 
