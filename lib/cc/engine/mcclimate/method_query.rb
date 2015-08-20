@@ -8,26 +8,38 @@ module CC
           @contents = contents
         end
 
-        def all(node = parsed)
+        def all
           found = []
 
-          if node.is_a?(Parser::AST::Node)
-            if node.type == :def
-              found << node
-            else
-              node.children.each do |child|
-                found += all(child)
-              end
-            end
-          end
+          found << parsed if method_node?(parsed)
 
-          found
+          found + child_methods(parsed)
         end
 
         private
 
+        def child_methods(node)
+          return [] unless node?(node)
+
+          node.children.inject([]) do |found, child|
+            if method_node?(child)
+              found << child
+            else
+              found + child_methods(child)
+            end
+          end
+        end
+
+        def node?(node)
+          node.is_a? Parser::AST::Node
+        end
+
+        def method_node?(node)
+          node?(node) && node.type == :def
+        end
+
         def parsed
-          Parser::Ruby20.parse(contents)
+          @parsed ||= Parser::Ruby20.parse(contents)
         end
       end
     end
