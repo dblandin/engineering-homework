@@ -1,5 +1,5 @@
-require 'parser/ruby20'
 require 'pathname'
+require 'parser/ruby20'
 require_relative './mcclimate/violation'
 require_relative './mcclimate/method_query'
 require_relative './mcclimate/complexity_score'
@@ -21,7 +21,8 @@ module CC
       def run
         ruby_files.each do |path|
           contents      = File.read(path)
-          found_methods = MethodQuery.new(contents).all
+          parsed_tree   = Parser::Ruby20.parse(contents)
+          found_methods = MethodQuery.new(parsed_tree).all
 
           found_methods.each do |method_node|
             score = ComplexityScore.new(method_node).calculate
@@ -47,7 +48,9 @@ module CC
       end
 
       def report_violation(violation)
-        output_io.print("#{violation.to_json}\0")
+        json = JSON.dump(violation.details)
+
+        output_io.print("#{json}\0")
       end
     end
   end

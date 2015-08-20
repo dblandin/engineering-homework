@@ -19,7 +19,7 @@ module CC
           @path        = path
         end
 
-        def to_json
+        def details
           FIXED_ATTRIBUTES.merge(
             description: "'##{method_name}' has a complexity of #{score}",
             location: {
@@ -28,8 +28,8 @@ module CC
                 begin: expression.first_line,
                 end: expression.last_line
               }
-            },
-          ).to_json
+            }
+          )
         end
 
         private

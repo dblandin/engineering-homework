@@ -2,18 +2,18 @@ module CC
   module Engine
     class Mcclimate
       class MethodQuery
-        attr_reader :contents
+        attr_reader :parsed_tree
 
-        def initialize(contents)
-          @contents = contents
+        def initialize(parsed_tree)
+          @parsed_tree = parsed_tree
         end
 
         def all
           found = []
 
-          found << parsed if method_node?(parsed)
+          found << parsed_tree if method_node?(parsed_tree)
 
-          found + child_methods(parsed)
+          found + child_methods(parsed_tree)
         end
 
         private
@@ -36,10 +36,6 @@ module CC
 
         def method_node?(node)
           node?(node) && node.type == :def
-        end
-
-        def parsed
-          @parsed ||= Parser::Ruby20.parse(contents)
         end
       end
     end
