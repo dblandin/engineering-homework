@@ -17,24 +17,22 @@ module CC
 
         private
 
-        def node_score(method_body = method_node)
-          score = 0
-
-          method_body.children.each do |child|
+        def node_score(node = method_node)
+          node.children.inject(0) do |score, child|
             if child.is_a? Parser::AST::Node
-              if child.type == :int
-                score += 1
-              else
-                score += node_score(child)
-              end
+              number_value?(child) ? score + 1 : score + node_score(child)
             else
-              if MATH_OPERATIONS.include?(child)
-                score += 1
-              end
+              operand_value?(child) ? score + 1 : 0
             end
           end
+        end
 
-          score
+        def number_value?(child)
+          child.type == :int
+        end
+
+        def operand_value?(child)
+          MATH_OPERATIONS.include?(child)
         end
       end
     end
