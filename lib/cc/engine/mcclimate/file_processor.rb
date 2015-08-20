@@ -1,4 +1,5 @@
-require_relative './complexity_score'
+require 'parser/ruby20'
+require_relative './complexity_processor'
 require_relative './violation'
 
 module CC
@@ -15,14 +16,17 @@ module CC
         end
 
         def on_def(method_node)
-          score = ComplexityScore.new(method_node).calculate
+          processor = ComplexityProcessor.new
+          processor.process(method_node)
 
-          if score > SCORE_REPORT_THRESHOLD
-            violation = Violation.new(method_node, score, path)
+          if processor.score > SCORE_REPORT_THRESHOLD
+            violation = Violation.new(method_node, processor.score, path)
 
             report_violation(violation)
           end
         end
+
+        private
 
         def report_violation(violation)
           json = JSON.dump(violation.details)
