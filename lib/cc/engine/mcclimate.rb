@@ -23,36 +23,31 @@ module CC
           contents      = File.read(path)
           found_methods = MethodQuery.new(contents).all
 
-          found_methods.each do |method|
-            score = ComplexityScore.new(method).calculate
+          found_methods.each do |method_node|
+            score = ComplexityScore.new(method_node).calculate
 
             if score > SCORE_REPORT_THRESHOLD
-              json = violation_json(method, score, path)
+              relative_path = Pathname.new(path).relative_path_from(code_path)
+              violation     = Violation.new(method_node, score, relative_path)
 
-              output_io.print("#{json}\0")
+              report_violation(violation)
             end
           end
         end
-
-        '---'
       end
 
       private
 
       def ruby_files
-        paths = Pathname.glob(File.join(code_path, '**', '*.rb'))
-
-        config.fetch(:exclude_paths, []).each do |path|
-          paths -= Pathname.glob(File.join(code_path, path))
-        end
-
-        paths
+        Pathname.glob(File.join(code_path, '**', '*.rb')) - excluded_ruby_files
       end
 
-      def violation_json(method, score, path)
-        relative_path = Pathname.new(path).relative_path_from(code_path)
+      def excluded_ruby_files
+        config.fetch(:exclude_paths, []).map { |path| Pathname.glob(File.join(code_path, path)) }.flatten
+      end
 
-        Violation.new(method, score, relative_path).to_json
+      def report_violation(violation)
+        output_io.print("#{violation.to_json}\0")
       end
     end
   end
