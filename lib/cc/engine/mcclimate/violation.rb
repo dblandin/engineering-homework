@@ -11,12 +11,12 @@ module CC
           remediation_points: 500
         }.freeze
 
-        attr_reader :parsed_method, :score, :path
+        attr_reader :method_node, :score, :path
 
-        def initialize(parsed_method, score, path)
-          @parsed_method = parsed_method
-          @score         = score
-          @path          = path
+        def initialize(method_node, score, path)
+          @method_node = method_node
+          @score       = score
+          @path        = path
         end
 
         def to_json
@@ -35,11 +35,11 @@ module CC
         private
 
         def method_name
-          parsed_method.children[0]
+          method_node.children[0]
         end
 
         def expression
-          parsed_method.location.expression
+          method_node.location.expression
         end
       end
     end
