@@ -1,11 +1,14 @@
 require 'parser/ruby20'
 require 'pathname'
 require_relative './mcclimate/violation'
+require_relative './mcclimate/method_query'
+require_relative './mcclimate/complexity_score'
 
 module CC
   module Engine
     class Mcclimate
-      MATH_OPERATIONS ||= %i[+ - / *].freeze
+      MATH_OPERATIONS        ||= %i[+ - / *].freeze
+      SCORE_REPORT_THRESHOLD ||= 10.freeze
 
       attr_reader :code_path, :config, :output_io
 
@@ -18,13 +21,12 @@ module CC
       def run
         ruby_files.each do |path|
           contents      = File.read(path)
-          parsed        = Parser::Ruby20.parse(contents)
-          found_methods = found_methods(parsed)
+          found_methods = MethodQuery.new(contents).all
 
           found_methods.each do |method|
-            score = calculate_score(method) + 1
+            score = ComplexityScore.new(method).calculate
 
-            if score > 10
+            if score > SCORE_REPORT_THRESHOLD
               json = violation_json(method, score, path)
 
               output_io.print("#{json}\0")
@@ -45,42 +47,6 @@ module CC
         end
 
         paths
-      end
-
-      def found_methods(parsed)
-        methods = []
-
-        if parsed.is_a?(Parser::AST::Node)
-          if parsed.type == :def
-            methods << parsed
-          else
-            parsed.children.each do |child|
-              methods += found_methods(child)
-            end
-          end
-        end
-
-        methods
-      end
-
-      def calculate_score(method_body)
-        score = 0
-
-        method_body.children.each do |child|
-          if child.is_a? Parser::AST::Node
-            if child.type == :int
-              score += 1
-            else
-              score += calculate_score(child)
-            end
-          else
-            if MATH_OPERATIONS.include?(child)
-              score += 1
-            end
-          end
-        end
-
-        score
       end
 
       def violation_json(method, score, path)
