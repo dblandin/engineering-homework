@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), "../lib")))
+
+require 'cc/engine/mcclimate'
+
+config = if File.exists?('/config.json')
+  JSON.parse(File.read('/config.json'))
+else
+  {}
+end
+
+code_path = ARGV[0]
+
+CC::Engine::Mcclimate.new(code_path: code_path, config: engine_config).run

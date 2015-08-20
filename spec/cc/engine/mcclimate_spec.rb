@@ -1,14 +1,18 @@
 require 'cc/engine/mcclimate'
+require 'tmpdir'
 
 module CC::Engine
   describe Mcclimate do
     describe '#run' do
       it 'analyzes source ruby files for complexity' do
-        engine = Mcclimate.new
+        code_path = Dir.mktmpdir
+        output_io = StringIO.new
 
-        output = engine.run
+        Mcclimate.new(code_path: code_path, output_io: output_io).run
 
-        expect(output).to be_truthy
+        results = output_io.string
+
+        expect(results.length).not_to be_zero
       end
     end
   end
