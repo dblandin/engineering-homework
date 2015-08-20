@@ -9,6 +9,6 @@ else
   {}
 end
 
-code_path = ARGV[0]
+code_path = ARGV[0] || '/code'
 
 CC::Engine::Mcclimate.new(code_path: code_path, config: config).run
