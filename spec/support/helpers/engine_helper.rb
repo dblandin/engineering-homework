@@ -13,9 +13,11 @@ module EngineHelper
   end
 
   def last_issue
-    issue = output_io.string.split("\0").last
+    issues.last
+  end
 
-    JSON.parse(issue)
+  def issues
+    output_io.string.split("\0").map { |json| JSON.parse(json) }
   end
 
   def output_io

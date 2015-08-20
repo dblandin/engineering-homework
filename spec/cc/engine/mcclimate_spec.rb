@@ -17,7 +17,7 @@ module CC::Engine
 
         Mcclimate.new(code_path: code_path, output_io: output_io).run
 
-        expect(output_io.string).not_to eq('')
+        expect(issues.count).to eq(1)
         expect(last_issue['description']).to eq("'#foo' has a complexity of 12")
       end
     end
