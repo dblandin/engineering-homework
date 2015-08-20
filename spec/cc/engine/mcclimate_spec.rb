@@ -6,6 +6,22 @@ module CC::Engine
     include EngineHelper
 
     describe '#run' do
+      it 'honors the exclude_paths configuration option' do
+        create_source_file('foo.rb', <<-RUBY)
+          def foo
+            x = 1 + 3
+            y = 2 * 4 + 6
+            z = x * y / 2
+          end
+        RUBY
+
+        config = { exclude_paths: ['foo.rb'] }
+
+        Mcclimate.new(code_path: code_path, config: config, output_io: output_io).run
+
+        expect(issues).to be_empty
+      end
+
       it 'analyzes source ruby files for complexity' do
         create_source_file('foo.rb', <<-RUBY)
           def foo

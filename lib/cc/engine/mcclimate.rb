@@ -16,9 +16,7 @@ module CC
       end
 
       def run
-        ruby_files = File.join(code_path, '**', '*.rb')
-
-        Pathname.glob(ruby_files).each do |path|
+        ruby_files.each do |path|
           contents      = File.read(path)
           parsed        = Parser::Ruby20.parse(contents)
           found_methods = found_methods(parsed)
@@ -38,6 +36,16 @@ module CC
       end
 
       private
+
+      def ruby_files
+        paths = Pathname.glob(File.join(code_path, '**', '*.rb'))
+
+        config.fetch(:exclude_paths, []).each do |path|
+          paths -= Pathname.glob(File.join(code_path, path))
+        end
+
+        paths
+      end
 
       def found_methods(parsed)
         methods = []
