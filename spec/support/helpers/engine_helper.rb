@@ -2,10 +2,11 @@ require 'tmpdir'
 require 'json'
 
 module EngineHelper
-  def create_source_file(path, content)
-    full_path = File.join(code_path, path)
+  def copy_fixture_file(fixture_filename, target_filename)
+    src  = test_fixture_path(fixture_filename)
+    dest = File.join(code_path, target_filename)
 
-    File.write(full_path, content)
+    FileUtils.cp(src, dest)
   end
 
   def code_path
