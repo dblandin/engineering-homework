@@ -8,8 +8,8 @@ USAGE_INSTRUCTIONS ||= <<-EOF
 usage: compare <base report path> <compare report path>
 EOF
 
-base_report_path    = ARGV[0] || ''
-compare_report_path = ARGV[1] || ''
+base_report_path    = ARGV[0] || '<missing>'
+compare_report_path = ARGV[1] || '<missing>'
 
 if File.exists?(base_report_path) && File.exists?(compare_report_path)
   base_report    = JSON.parse(File.read(base_report_path))
@@ -18,4 +18,5 @@ if File.exists?(base_report_path) && File.exists?(compare_report_path)
   CC::Engine::Compare.new(base_report: base_report, compare_report: compare_report).run
 else
   print USAGE_INSTRUCTIONS
+  raise ArgumentError.new("Invalid report paths: #{base_report_path} #{compare_report_path}")
 end

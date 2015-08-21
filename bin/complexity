@@ -5,11 +5,17 @@ CONFIG_PATH ||= '/config.json'.freeze
 require 'json'
 require 'cc/engine/mcclimate'
 
+USAGE_INSTRUCTIONS ||= <<-EOF
+usage: complexity [code_path]
+EOF
+
 config    = File.exists?(CONFIG_PATH) ? JSON.parse(File.read(CONFIG_PATH)) : {}
 code_path = ARGV[0] || '/code'
 
-unless File.directory?(code_path)
+if File.directory?(code_path)
+  CC::Engine::Mcclimate.new(code_path: code_path, config: config).run
+else
+  print USAGE_INSTRUCTIONS
   raise ArgumentError.new("Directory '#{code_path}' does not exist")
 end
 
-CC::Engine::Mcclimate.new(code_path: code_path, config: config).run
