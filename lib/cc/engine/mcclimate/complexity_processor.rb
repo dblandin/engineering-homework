@@ -1,4 +1,4 @@
-require 'parser/ruby20'
+require 'parser'
 
 module CC
   module Engine

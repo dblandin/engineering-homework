@@ -1,4 +1,4 @@
-require 'parser/ruby20'
+require 'parser'
 require_relative './complexity_processor'
 require_relative './violation'
 
@@ -20,7 +20,10 @@ module CC
           processor.process(method_node)
 
           if processor.score > SCORE_REPORT_THRESHOLD
-            violation = Violation.new(method_node, processor.score, path)
+            method_name = method_node.children[0]
+            location    = method_node.location
+            range       = (location.first_line..location.last_line)
+            violation   = Violation.new(method_name, range, path, processor.score)
 
             report_violation(violation)
           end

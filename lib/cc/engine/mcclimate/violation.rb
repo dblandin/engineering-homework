@@ -1,6 +1,3 @@
-require 'pathname'
-require 'json'
-
 module CC
   module Engine
     class Mcclimate
@@ -11,12 +8,13 @@ module CC
           remediation_points: 500
         }.freeze
 
-        attr_reader :method_node, :score, :path
+        attr_reader :method_name, :range, :path, :score
 
-        def initialize(method_node, score, path)
-          @method_node = method_node
-          @score       = score
+        def initialize(method_name, range, path, score)
+          @method_name = method_name
+          @range       = range
           @path        = path
+          @score       = score
         end
 
         def details
@@ -25,21 +23,11 @@ module CC
             location: {
               path: path,
               lines: {
-                begin: expression.first_line,
-                end: expression.last_line
+                begin: range.first,
+                end: range.last
               }
             }
           )
-        end
-
-        private
-
-        def method_name
-          method_node.children[0]
-        end
-
-        def expression
-          method_node.location.expression
         end
       end
     end
