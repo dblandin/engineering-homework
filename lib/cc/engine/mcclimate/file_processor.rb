@@ -16,14 +16,11 @@ module CC
         end
 
         def on_def(method_node)
-          processor = ComplexityProcessor.new
-          processor.process(method_node)
+          processor = ComplexityProcessor.new(method_node, path)
+          processor.process!
 
           if processor.score > SCORE_REPORT_THRESHOLD
-            method_name = method_node.children[0]
-            location    = method_node.location
-            range       = (location.first_line..location.last_line)
-            violation   = Violation.new(method_name, range, path, processor.score)
+            violation   = Violation.new(processor.report)
 
             report_violation(violation)
           end

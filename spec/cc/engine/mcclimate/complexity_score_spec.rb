@@ -8,10 +8,10 @@ module CC::Engine
 
     describe '#calculate' do
       it 'calculates the complexity score for a method' do
-        tree = Parser::CurrentRuby.parse_file(test_fixture_path('complex_12.rb'))
+        method_node = Parser::CurrentRuby.parse_file(test_fixture_path('complex_method_12.rb'))
 
-        processor = Mcclimate::ComplexityProcessor.new
-        processor.process(tree)
+        processor = Mcclimate::ComplexityProcessor.new(method_node, 'foo.rb')
+        processor.process!
 
         expect(processor.score).to eq(12)
       end

@@ -1,4 +1,5 @@
 require 'parser'
+require_relative './complexity_report'
 
 module CC
   module Engine
@@ -7,10 +8,20 @@ module CC
         INITIAL_SCORE   ||= 1.freeze
         MATH_METHODS ||= %i[+ - / *].freeze
 
-        attr_reader :score
+        attr_reader :method_node, :path, :score
 
-        def initialize
-          @score = INITIAL_SCORE
+        def initialize(method_node, path)
+          @method_node = method_node
+          @path        = path
+          @score       = INITIAL_SCORE
+        end
+
+        def process!
+          process(method_node)
+        end
+
+        def report
+          ComplexityReport.new(method_node, path, score)
         end
 
         def on_send(node)

@@ -8,23 +8,20 @@ module CC
           remediation_points: 500
         }.freeze
 
-        attr_reader :method_name, :range, :path, :score
+        attr_reader :report
 
-        def initialize(method_name, range, path, score)
-          @method_name = method_name
-          @range       = range
-          @path        = path
-          @score       = score
+        def initialize(report)
+          @report = report
         end
 
         def details
           FIXED_ATTRIBUTES.merge(
-            description: "'##{method_name}' has a complexity of #{score}",
+            description: "'##{report.method_name}' has a complexity of #{report.score}",
             location: {
-              path: path,
+              path: report.path,
               lines: {
-                begin: range.first,
-                end: range.last
+                begin: report.range.first,
+                end: report.range.last
               }
             }
           )
