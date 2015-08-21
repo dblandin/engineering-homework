@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
-$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), "../lib")))
+$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), '../lib')))
+CONFIG_PATH ||= '/config.json'.freeze
 
 require 'json'
 require 'cc/engine/mcclimate'
 
-config = if File.exists?('/config.json')
-  JSON.parse(File.read('/config.json'))
-else
-  {}
-end
-
+config    = File.exists?(CONFIG_PATH) ? JSON.parse(File.read(CONFIG_PATH)) : {}
 code_path = ARGV[0] || '/code'
+
+unless File.directory?(code_path)
+  raise ArgumentError.new("Directory '#{code_path}' does not exist")
+end
 
 CC::Engine::Mcclimate.new(code_path: code_path, config: config).run
