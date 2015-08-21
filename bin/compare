@@ -11,7 +11,7 @@ EOF
 base_report_path    = ARGV[0] || ''
 compare_report_path = ARGV[1] || ''
 
-if File.exists?(base_report_path) && File.exists?(compare_report)
+if File.exists?(base_report_path) && File.exists?(compare_report_path)
   base_report    = JSON.parse(File.read(base_report_path))
   compare_report = JSON.parse(File.read(compare_report_path))
 

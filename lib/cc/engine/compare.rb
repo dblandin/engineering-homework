@@ -1,7 +1,7 @@
 module CC
   module Engine
     class Compare
-      NULL_CHARACTER ||= "\0".freeze
+      NEW_LINE_CHARACTER ||= "\n".freeze
       TEMPLATES ||= {
         new:   'NEW: %{description}',
         fixed: 'FIXED: %{description}'
@@ -33,7 +33,7 @@ module CC
       def report(type, description)
         message = TEMPLATES[type] % { description: description }
 
-        output_io.print(message + NULL_CHARACTER)
+        output_io.print(message + NEW_LINE_CHARACTER)
       end
     end
   end
