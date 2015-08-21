@@ -1,7 +1,3 @@
-require 'pathname'
-require 'parser/current'
-require_relative './mcclimate/file_processor'
-
 module CC
   module Engine
     class Compare
