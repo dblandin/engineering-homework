@@ -18,7 +18,7 @@ module EngineHelper
   end
 
   def issues
-    output_io.string.split("\0").map { |json| JSON.parse(json) }
+    output_io.string.split("\0").map { |json| JSON.parse(json) }.flatten
   end
 
   def output_io

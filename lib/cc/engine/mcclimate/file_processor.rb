@@ -23,14 +23,14 @@ module CC
           if processor.score > SCORE_REPORT_THRESHOLD
             violation   = Violation.new(processor.report)
 
-            report_violation(violation)
+            report_violation(violation.details)
           end
         end
 
         private
 
-        def report_violation(violation)
-          json = JSON.dump(violation.details)
+        def report_violation(details)
+          json = JSON.dump(details)
 
           output_io.print("#{json}\0")
         end
