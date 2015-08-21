@@ -1,4 +1,4 @@
-require 'pathname'
+require 'json'
 
 module CC
   module Engine
@@ -11,27 +11,31 @@ module CC
         end
 
         def stale?(path, relative_path)
-          cached_report_path = Pathname.new(File.join(cache_path, relative_path) + '.json')
+          cached_report_path = File.join(cache_path, relative_path) + '.json'
 
           if File.exists?(cached_report_path)
-            cached_report_path.mtime < path.mtime
+            File.mtime(cached_report_path) < File.mtime(path)
           else
             true
           end
         end
 
-        def report(relative_path)
-          File.read(File.join(cache_path, relative_path) + '.json')
-        end
+        def record(relative_path, report_details)
+          cached_report_path = File.join(cache_path, relative_path) + '.json'
 
-        def record(relative_path, reports)
-          cached_report_path = Pathname.new(File.join(cache_path, relative_path) + '.json')
-
-          File.open(cached_report_path, 'w+') { |file| file.write(JSON.dump(reports)) }
+          File.open(cached_report_path, 'w+') do |file|
+            file.write(JSON.dump(report_details))
+          end
         end
 
         def process(relative_path, output_io)
-          output_io.print(report(relative_path))
+          output_io.print(cached_report(relative_path))
+        end
+
+        private
+
+        def cached_report(relative_path)
+          File.read(File.join(cache_path, relative_path) + '.json')
         end
       end
     end

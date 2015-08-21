@@ -11,10 +11,7 @@ module CC
           true
         end
 
-        def report(relative_path)
-        end
-
-        def record(relative_path, reports)
+        def record(relative_path, report_details)
         end
 
         def process(relative_path, output_io)

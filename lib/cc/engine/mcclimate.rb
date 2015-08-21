@@ -23,7 +23,6 @@ module CC
 
             if cache.stale?(path, relative_path)
               processor = FileProcessor.new(relative_path, output_io)
-
               processor.process(tree)
 
               cache.record(relative_path, processor.reports)
