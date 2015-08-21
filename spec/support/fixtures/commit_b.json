@@ -1,0 +1,27 @@
+[{
+  "type": "issue",
+  "engine_name": "mcclimate",
+  "check_name": "complexity",
+  "remediation_points": 500,
+  "description": "'#foo' has a complexity of 15",
+  "location": {
+    "path": "example_15.rb",
+    "lines": {
+      "begin": 3,
+      "end": 9
+    }
+  }
+},{
+  "type": "issue",
+  "engine_name": "mcclimate",
+  "check_name": "complexity",
+  "remediation_points": 500,
+  "description": "'#zap' has a complexity of 30",
+  "location": {
+    "path": "example_30.rb",
+    "lines": {
+      "begin": 12,
+      "end":20 
+    }
+  }
+}]
