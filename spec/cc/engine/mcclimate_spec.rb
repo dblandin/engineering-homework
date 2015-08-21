@@ -27,13 +27,14 @@ module CC::Engine
       end
 
       it 'uses a cache for file reports' do
-        cache_path = Dir.mktmpdir
-
+        cache_path  = Dir.mktmpdir
         cached_path = File.join(cache_path, 'foo.rb.json')
+
         FileUtils.cp(test_fixture_path('cached_report.json'), cached_path)
         FileUtils.touch(cached_path, mtime: Time.now + 100)
 
         copy_fixture_file('complex_12.rb', 'foo.rb')
+
         cache = Mcclimate::IssueCache.new(cache_path: cache_path)
 
         Mcclimate.new(code_path: code_path, output_io: output_io, cache: cache).run
@@ -65,6 +66,14 @@ module CC::Engine
         config = { 'exclude_paths' => ['foo.rb'] }
 
         Mcclimate.new(code_path: code_path, config: config, output_io: output_io).run
+
+        expect(issues).to be_empty
+      end
+
+      it 'does not blow up when encountering empty source files' do
+        copy_fixture_file('empty_file.rb', 'foo.rb')
+
+        Mcclimate.new(code_path: code_path, output_io: output_io).run
 
         expect(issues).to be_empty
       end
