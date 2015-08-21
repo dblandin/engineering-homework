@@ -21,15 +21,21 @@ module CC
           processor.process!
 
           if processor.score > SCORE_REPORT_THRESHOLD
-            violation   = Violation.new(processor.report)
+            violation = Violation.new(processor.report)
 
             report_violation(violation.details)
           end
         end
 
+        def reports
+          @reports ||= []
+        end
+
         private
 
         def report_violation(details)
+          reports << details
+
           json = JSON.dump(details)
 
           output_io.print("#{json}\0")

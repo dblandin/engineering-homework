@@ -1,7 +1,7 @@
-require 'support/helpers/engine_helper'
-require 'support/helpers/fixture_helper'
 require 'cc/engine/mcclimate'
 require 'cc/engine/mcclimate/issue_cache'
+require 'support/helpers/engine_helper'
+require 'support/helpers/fixture_helper'
 
 module CC::Engine
   describe Mcclimate do
@@ -34,13 +34,24 @@ module CC::Engine
         FileUtils.touch(cached_path, mtime: Time.now + 100)
 
         copy_fixture_file('complex_12.rb', 'foo.rb')
+        copy_fixture_file('complex_20.rb', 'bar.rb')
 
         cache = Mcclimate::IssueCache.new(cache_path: cache_path)
 
         Mcclimate.new(code_path: code_path, output_io: output_io, cache: cache).run
 
-        expect(issues.count).to eq(1)
-        expect(last_issue).to include(
+        expect(issues.count).to eq(2)
+        expect(issues[0]).to include(
+          'description' => "'#foo' has a complexity of 20",
+          'location' => {
+            'path' => 'bar.rb',
+            'lines' => {
+              'begin' => 2,
+              'end' => 8
+            }
+          }
+        )
+        expect(issues[1]).to include(
           'description' => "'#bar' has a complexity of 11",
           'location' => {
             'path' => 'foo.rb',

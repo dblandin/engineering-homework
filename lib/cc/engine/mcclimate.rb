@@ -26,7 +26,7 @@ module CC
 
               processor.process(tree)
 
-              cache.record(relative_path, output_io)
+              cache.record(relative_path, processor.reports)
             else
               cache.process(relative_path, output_io)
             end

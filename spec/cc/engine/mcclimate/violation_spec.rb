@@ -1,7 +1,7 @@
 require 'parser/current'
-require 'support/helpers/fixture_helper'
-require 'cc/engine/mcclimate/complexity_report'
 require 'cc/engine/mcclimate/violation'
+require 'cc/engine/mcclimate/complexity_report'
+require 'support/helpers/fixture_helper'
 
 module CC::Engine
   describe Mcclimate::Violation do
@@ -9,9 +9,9 @@ module CC::Engine
 
     describe '#details' do
       it 'returns violation json for the passed values' do
-        method_node = Parser::CurrentRuby.parse_file(test_fixture_path('complex_method_12.rb'))
-        report      = Mcclimate::ComplexityReport.new(method_node, 'foo.rb', 12)
-        violation   = Mcclimate::Violation.new(report)
+        tree      = parsed_fixture_file('complex_method_12.rb')
+        report    = Mcclimate::ComplexityReport.new(tree, 'foo.rb', 12)
+        violation = Mcclimate::Violation.new(report)
 
         expect(violation.details).to eq(
           type: 'issue',

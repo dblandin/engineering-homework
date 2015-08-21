@@ -1,3 +1,5 @@
+require 'pathname'
+
 module CC
   module Engine
     class Mcclimate
@@ -22,14 +24,10 @@ module CC
           File.read(File.join(cache_path, relative_path) + '.json')
         end
 
-        def record(relative_path, output_io)
+        def record(relative_path, reports)
           cached_report_path = Pathname.new(File.join(cache_path, relative_path) + '.json')
 
-          if File.exists?(cached_report_path)
-            File.open(cached_report_path, 'w+') { |file| file.write(output_io) }
-          else
-            File.new(cached_report_path, 'w+') { |file| file.write(output_io) }
-          end
+          File.open(cached_report_path, 'w+') { |file| file.write(JSON.dump(reports)) }
         end
 
         def process(relative_path, output_io)

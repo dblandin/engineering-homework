@@ -5,8 +5,8 @@ module CC
   module Engine
     class Mcclimate
       class ComplexityProcessor < Parser::AST::Processor
-        INITIAL_SCORE   ||= 1.freeze
-        MATH_METHODS ||= %i[+ - / *].freeze
+        INITIAL_SCORE ||= 1.freeze
+        MATH_METHODS  ||= %i[+ - / *].freeze
 
         attr_reader :method_node, :path, :score
 

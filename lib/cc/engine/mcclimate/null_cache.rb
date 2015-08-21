@@ -14,7 +14,7 @@ module CC
         def report(relative_path)
         end
 
-        def record(relative_path, output_io)
+        def record(relative_path, reports)
         end
 
         def process(relative_path, output_io)
