@@ -42,7 +42,7 @@ module CC
       end
 
       def excluded_ruby_files
-        config.fetch(:exclude_paths, []).map do |path|
+        config.fetch('exclude_paths', []).map do |path|
           Pathname.glob(File.join(code_path, path))
         end.flatten
       end

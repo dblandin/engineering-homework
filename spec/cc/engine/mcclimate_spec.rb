@@ -62,7 +62,7 @@ module CC::Engine
       it 'honors the exclude_paths configuration option' do
         copy_fixture_file('complex_12.rb', 'foo.rb')
 
-        config = { exclude_paths: ['foo.rb'] }
+        config = { 'exclude_paths' => ['foo.rb'] }
 
         Mcclimate.new(code_path: code_path, config: config, output_io: output_io).run
 
