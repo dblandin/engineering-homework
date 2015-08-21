@@ -5,8 +5,11 @@ require_relative './mcclimate/file_processor'
 module CC
   module Engine
     class Compare
-      NEW_TEMPLATE   ||= 'NEW: %{description}'.freeze
-      FIXED_TEMPLATE ||= 'FIXED: %{description}'.freeze
+      NULL_CHARACTER ||= "\0".freeze
+      TEMPLATES ||= {
+        new:   'NEW: %{description}',
+        fixed: 'FIXED: %{description}'
+      }.freeze
 
       attr_reader :base_report, :compare_report, :output_io
 
@@ -17,8 +20,8 @@ module CC
       end
 
       def run
-        new_issues.each   { |issue| report_new(issue) }
-        fixed_issues.each { |issue| report_fixed(issue) }
+        new_issues.each   { |issue| report(:new, issue['description']) }
+        fixed_issues.each { |issue| report(:fixed, issue['description']) }
       end
 
       private
@@ -31,12 +34,10 @@ module CC
         base_report - compare_report
       end
 
-      def report_new(issue)
-        output_io.print(NEW_TEMPLATE % { description: issue['description'] } + "\0")
-      end
+      def report(type, description)
+        message = TEMPLATES[type] % { description: description }
 
-      def report_fixed(issue)
-        output_io.print(FIXED_TEMPLATE % { description: issue['description'] } + "\0")
+        output_io.print(message + NULL_CHARACTER)
       end
     end
   end
