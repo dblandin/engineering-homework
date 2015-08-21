@@ -17,17 +17,20 @@ module CC
 
       def run
         ruby_files.each do |path|
-          tree          = Parser::CurrentRuby.parse_file(path)
-          relative_path = Pathname.new(path).relative_path_from(code_path)
+          begin
+            tree          = Parser::CurrentRuby.parse_file(path)
+            relative_path = Pathname.new(path).relative_path_from(code_path)
 
-          if cache.stale?(path, relative_path)
-            processor = FileProcessor.new(relative_path, output_io)
+            if cache.stale?(path, relative_path)
+              processor = FileProcessor.new(relative_path, output_io)
 
-            processor.process(tree)
+              processor.process(tree)
 
-            cache.record(relative_path, output_io)
-          else
-            cache.process(relative_path, output_io)
+              cache.record(relative_path, output_io)
+            else
+              cache.process(relative_path, output_io)
+            end
+          rescue Parser::SyntaxError => e
           end
         end
       end
