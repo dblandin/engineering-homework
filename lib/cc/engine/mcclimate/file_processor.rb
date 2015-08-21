@@ -1,3 +1,4 @@
+require 'json'
 require 'parser'
 require_relative './complexity_processor'
 require_relative './violation'

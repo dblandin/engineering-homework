@@ -1,5 +1,5 @@
-require 'tmpdir'
 require 'json'
+require 'tmpdir'
 
 module EngineHelper
   def copy_fixture_file(fixture_filename, target_filename)
