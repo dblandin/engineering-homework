@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), "../lib")))
+
+require 'json'
+require 'cc/engine/compare'
+
+base_report_path    = ARGV[0]
+compare_report_path = ARGV[1]
+
+base_report    = JSON.parse(File.read(base_report_path))
+compare_report = JSON.parse(File.read(compare_report_path))
+
+CC::Engine::Compare.new(base_report: base_report, compare_report: compare_report).run
