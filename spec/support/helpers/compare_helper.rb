@@ -1,6 +1,6 @@
 module CompareHelper
   def results
-    output_io.string.split("\0")
+    output_io.string.split("\n")
   end
 
   def output_io
