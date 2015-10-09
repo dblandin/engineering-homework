@@ -1,0 +1,4 @@
+engines:
+  mcclimate:
+    enabled: true
+
